@@ -18,6 +18,7 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
     //Location Manager
     var locationManager: CLLocationManager!
     
+    //To represent the user's location coordination
     var userCoordinate = CLLocationCoordinate2D()
     
     override func viewDidLoad() {
