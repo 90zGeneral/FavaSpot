@@ -21,9 +21,6 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
     //To represent the user's location coordination
     var userCoordinate = CLLocationCoordinate2D()
     
-    //Represent new annotations on the map
-    var number = 0
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -82,18 +79,82 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
             
             //Grab the user's touch point and convert it into coordinates
             let userTouch = gestureRecognizer.location(in: mapView)
-            let newCoordinates: CLLocationCoordinate2D = mapView.convert(userTouch, toCoordinateFrom: mapView)
+            let newCoordinates = mapView.convert(userTouch, toCoordinateFrom: mapView)
             
-            number += 1
-            
-            //Create a new annotation for the new location
-            let annotation = MKPointAnnotation()
-            annotation.coordinate = newCoordinates
-            annotation.title = "New Location"
-            annotation.subtitle = "touch point \(Int(number))"
-            mapView.addAnnotation(annotation)
-
-
+            //Address converter from coordinates to human readable
+            let location: CLLocation = CLLocation(latitude: newCoordinates.latitude, longitude: newCoordinates.longitude)
+            CLGeocoder().reverseGeocodeLocation(location, completionHandler: { (placemarks, error) in
+                
+                var title = ""
+                var subtitle = ""
+                
+                //Error handling
+                if error != nil {
+                    print(error.debugDescription)
+                    
+                }else {
+                    let placemark = placemarks?[0]
+                    
+                    if let address = placemark {
+                        
+                        //Street number and name
+                        var subThoroughfare = ""
+                        var thoroughfare = ""
+                        var city = ""
+                        var state = ""
+                        var zipCode = ""
+                        var country = ""
+                        
+                        if (address.subThoroughfare != nil) {
+                            subThoroughfare = address.subThoroughfare!
+                        }
+                        
+                        if (address.thoroughfare != nil) {
+                            thoroughfare = address.thoroughfare!
+                        }
+                        
+                        if (address.locality != nil) {
+                            city = address.locality!
+                        }
+                        
+                        if (address.administrativeArea != nil) {
+                            state = address.administrativeArea!
+                        }
+                        
+                        if (address.postalCode != nil) {
+                           zipCode = address.postalCode!
+                        }
+                        
+                        if (address.country != nil) {
+                           country = address.country!
+                        }
+                        
+                        title = "\(subThoroughfare) \(thoroughfare)"
+                        subtitle = "\(city), \(state) \(zipCode), \(country)"
+                        
+                        print("\(subThoroughfare) \(String(describing: address.thoroughfare!)) \n \(String(describing: address.locality!)) \n \(String(describing: address.administrativeArea!)) \n \(String(describing: address.postalCode!)) \n \(String(describing: address.country!))")
+                    }
+                }
+                
+                //Check if title is empty
+                if title == "" {
+                    
+                    title = "Added \(Date())"
+                }
+                
+                if subtitle == "" {
+                    
+                    subtitle = "Unavailable"
+                }
+                
+                //Create a new annotation for the new location
+                let annotation = MKPointAnnotation()
+                annotation.coordinate = newCoordinates
+                annotation.title = title
+                annotation.subtitle = subtitle
+                self.mapView.addAnnotation(annotation)
+                
+            })
         }
         
     }
