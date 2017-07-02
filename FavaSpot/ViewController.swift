@@ -21,6 +21,9 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
     //To represent the user's location coordination
     var userCoordinate = CLLocationCoordinate2D()
     
+    //Represent new annotations on the map
+    var number = 0
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -35,6 +38,11 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         locationManager.requestWhenInUseAuthorization()
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.startUpdatingLocation()
+        
+        //Add a Long Press Gesture Recognizer to the map after 2 seconds of pressing
+        let longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(ViewController.lpgrAction(_:)))
+        longPressGestureRecognizer.minimumPressDuration = 2.0
+        mapView.addGestureRecognizer(longPressGestureRecognizer)
 
     }
     
@@ -64,6 +72,29 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         let region: MKCoordinateRegion = MKCoordinateRegion(center: userCoordinate, span: span)
 
         mapView.setRegion(region, animated: false)
+        
+    }
+    
+    func lpgrAction(_ gestureRecognizer: UIGestureRecognizer) {
+        
+        //Check if the recognizer's state has begun to avoid repeated addition of an annotation to the map
+        if gestureRecognizer.state == UIGestureRecognizerState.began {
+            
+            //Grab the user's touch point and convert it into coordinates
+            let userTouch = gestureRecognizer.location(in: mapView)
+            let newCoordinates: CLLocationCoordinate2D = mapView.convert(userTouch, toCoordinateFrom: mapView)
+            
+            number += 1
+            
+            //Create a new annotation for the new location
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = newCoordinates
+            annotation.title = "New Location"
+            annotation.subtitle = "touch point \(Int(number))"
+            mapView.addAnnotation(annotation)
+
+
+        }
         
     }
 
