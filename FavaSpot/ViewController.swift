@@ -31,10 +31,34 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         mapView.delegate = self
         locationManager.delegate = self
         
-        //Permission request for user's location
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.startUpdatingLocation()
+        if activePlace == -1 {
+            
+            //Permission request for user's location
+            locationManager.requestWhenInUseAuthorization()
+            locationManager.startUpdatingLocation()
+            locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        
+        }else {
+            let latitude = NSString(string: places[activePlace]["lat"]!).doubleValue
+            let longitude = NSString(string: places[activePlace]["long"]!).doubleValue
+            
+            let userLatDelta: CLLocationDegrees = 0.01
+            let userLongDelta: CLLocationDegrees = 0.01
+            
+            userCoordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+            let span: MKCoordinateSpan = MKCoordinateSpan(latitudeDelta: userLatDelta, longitudeDelta: userLongDelta)
+            
+            let region: MKCoordinateRegion = MKCoordinateRegion(center: userCoordinate, span: span)
+            
+            mapView.setRegion(region, animated: false)
+            
+            //Create an annotation
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = userCoordinate
+            annotation.title = places[activePlace]["name"]
+            mapView.addAnnotation(annotation)
+        }
+        
         
         //Add a Long Press Gesture Recognizer to the map after 2 seconds of pressing
         let longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(ViewController.lpgrAction(_:)))
@@ -164,8 +188,6 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
                 
             })
         }
-        
     }
-
 }
 

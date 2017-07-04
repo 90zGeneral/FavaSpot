@@ -57,6 +57,9 @@
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="BYZ-38-t0r" kind="show" id="Mca-bd-CeK"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -67,7 +70,7 @@
                     <navigationItem key="navigationItem" title="Root View Controller" id="Ffy-ux-Lea">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="kzp-Tw-eIf">
                             <connections>
-                                <segue destination="BYZ-38-t0r" kind="show" id="scz-gR-Q89"/>
+                                <segue destination="BYZ-38-t0r" kind="show" identifier="newPlace" id="scz-gR-Q89"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -93,4 +96,7 @@
             <point key="canvasLocation" x="116" y="69"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="scz-gR-Q89"/>
+    </inferredMetricsTieBreakers>
 </document>

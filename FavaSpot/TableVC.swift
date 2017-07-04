@@ -11,6 +11,8 @@ import UIKit
 //An array of dictionaries to store places for populating the tableView
 var places = [Dictionary<String, String>()]
 
+var activePlace = -1
+
 class TableVC: UITableViewController {
 
     override func viewDidLoad() {
@@ -28,11 +30,13 @@ class TableVC: UITableViewController {
             
             places.remove(at: 0)
             
-            places.append(["name": "Buxton", "lat": "7.117117", "long": "11.711711"])
+            places.append(["name": "Buxton", "lat": " 27.173891", "long": "78.042068"])
         }
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        
+        print(places)
         
         //Reload tableView with new items
         self.tableView.reloadData()
@@ -56,6 +60,21 @@ class TableVC: UITableViewController {
         cell.textLabel?.text = places[indexPath.row]["name"]
 
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        
+        activePlace = indexPath.row
+        
+        return indexPath
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if segue.identifier == "newPlace" {
+            
+            activePlace = -1
+        }
     }
     
 
