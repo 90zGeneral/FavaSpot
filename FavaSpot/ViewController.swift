@@ -97,7 +97,7 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
                     
                     if let address = placemark {
                         
-                        //Street number and name
+                        //Street number, name, city, state, zipcode, and country
                         var subThoroughfare = ""
                         var thoroughfare = ""
                         var city = ""
@@ -105,6 +105,7 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
                         var zipCode = ""
                         var country = ""
                         
+                        //Assignments
                         if (address.subThoroughfare != nil) {
                             subThoroughfare = address.subThoroughfare!
                         }
@@ -129,6 +130,7 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
                            country = address.country!
                         }
                         
+                        //Update string values for title and subtitle
                         title = "\(subThoroughfare) \(thoroughfare)"
                         subtitle = "\(city), \(state) \(zipCode), \(country)"
                         
@@ -136,7 +138,7 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
                     }
                 }
                 
-                //Check if title is empty
+                //Check if title and subtitle are empty
                 if title == "" {
                     
                     title = "Added \(Date())"
@@ -147,12 +149,18 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
                     subtitle = "Unavailable"
                 }
                 
+                //Add the new location to the places dictionary
+                places.append(["name": title, "lat": "\(newCoordinates.latitude)", "long": "\(newCoordinates.longitude)"])
+                
+                
                 //Create a new annotation for the new location
                 let annotation = MKPointAnnotation()
                 annotation.coordinate = newCoordinates
                 annotation.title = title
                 annotation.subtitle = subtitle
                 self.mapView.addAnnotation(annotation)
+                
+                print(places.count)
                 
             })
         }

@@ -8,6 +8,9 @@
 
 import UIKit
 
+//An array of dictionaries to store places for populating the tableView
+var places = [Dictionary<String, String>()]
+
 class TableVC: UITableViewController {
 
     override func viewDidLoad() {
@@ -18,10 +21,24 @@ class TableVC: UITableViewController {
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+        
+        
+        //Check if there is default item in places and remove it, then add a new item
+        if places.count == 1 {
+            
+            places.remove(at: 0)
+            
+            places.append(["name": "Buxton", "lat": "7.117117", "long": "11.711711"])
+        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        
+        //Reload tableView with new items
+        self.tableView.reloadData()
     }
 
     // MARK: - Table view data source
-
     override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 1
@@ -29,14 +46,14 @@ class TableVC: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return 3
+        return places.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
 
         // Configure the cell...
-        cell.textLabel?.text = "Ready"
+        cell.textLabel?.text = places[indexPath.row]["name"]
 
         return cell
     }
